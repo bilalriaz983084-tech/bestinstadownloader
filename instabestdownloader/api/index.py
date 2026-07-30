@@ -3,17 +3,28 @@ from flask_cors import CORS
 import yt_dlp
 
 app = Flask(__name__)
+# Enable CORS for all routes (allows Netlify/frontend origins)
 CORS(app)
 
 @app.route('/', methods=['GET'])
+@app.route('/api', methods=['GET'])
 def home():
     return jsonify({"status": "InstaBestDownloader API is online on Vercel!"})
 
-@app.route('/api/download', methods=['GET'])
+# Accept BOTH POST (from downloader.js) and GET requests
+@app.route('/api/download', methods=['POST', 'GET'])
 def get_reel_data():
-    reel_url = request.args.get('url')
+    reel_url = None
+
+    # Handle incoming URL whether sent via POST JSON or GET query parameter
+    if request.method == 'POST':
+        data = request.get_json(silent=True) or {}
+        reel_url = data.get('url')
+    else:
+        reel_url = request.args.get('url')
+
     if not reel_url:
-        return jsonify({'error': 'Please provide an Instagram URL'}), 400
+        return jsonify({'success': False, 'error': 'Please provide an Instagram URL'}), 400
 
     ydl_opts = {
         'quiet': True,
