@@ -4,7 +4,7 @@
 
 // Live Backend Endpoint (Vercel API)
 const API_CONFIG = {
-  endpoint: 'https://YOUR-NEW-VERCEL-URL.vercel.app/api/download'
+  endpoint: 'https://bestinstadownloader.vercel.app/api/download'
 };
 
 async function fetchReelData(reelUrl) {
