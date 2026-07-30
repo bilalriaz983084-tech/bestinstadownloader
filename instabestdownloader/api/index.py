@@ -3,20 +3,15 @@ from flask_cors import CORS
 import yt_dlp
 
 app = Flask(__name__)
-# Enable CORS for all routes (allows Netlify/frontend origins)
 CORS(app)
 
-@app.route('/', methods=['GET'])
 @app.route('/api', methods=['GET'])
 def home():
-    return jsonify({"status": "InstaBestDownloader API is online on Vercel!"})
+    return jsonify({"status": "InstaBestDownloader API is active!"})
 
-# Accept BOTH POST (from downloader.js) and GET requests
 @app.route('/api/download', methods=['POST', 'GET'])
-def get_reel_data():
+def download():
     reel_url = None
-
-    # Handle incoming URL whether sent via POST JSON or GET query parameter
     if request.method == 'POST':
         data = request.get_json(silent=True) or {}
         reel_url = data.get('url')
@@ -37,7 +32,6 @@ def get_reel_data():
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(reel_url, download=False)
-            
             video_url = info.get('url')
             if not video_url and 'formats' in info and len(info['formats']) > 0:
                 video_url = info['formats'][-1].get('url')
