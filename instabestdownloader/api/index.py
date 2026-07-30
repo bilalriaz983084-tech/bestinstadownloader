@@ -5,13 +5,17 @@ import yt_dlp
 app = Flask(__name__)
 CORS(app)
 
+# 1. THIS ROUTE FIXES THE 404 ON THE MAIN URL
+@app.route('/', methods=['GET'])
 @app.route('/api', methods=['GET'])
 def home():
-    return jsonify({"status": "InstaBestDownloader API is active!"})
+    return jsonify({"status": "InstaBestDownloader API is online on Vercel!"})
 
+# 2. Main API Endpoint
 @app.route('/api/download', methods=['POST', 'GET'])
-def download():
+def get_reel_data():
     reel_url = None
+
     if request.method == 'POST':
         data = request.get_json(silent=True) or {}
         reel_url = data.get('url')
@@ -32,6 +36,7 @@ def download():
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(reel_url, download=False)
+            
             video_url = info.get('url')
             if not video_url and 'formats' in info and len(info['formats']) > 0:
                 video_url = info['formats'][-1].get('url')
