@@ -5,14 +5,13 @@ import yt_dlp
 app = Flask(__name__)
 CORS(app)
 
-# 1. THIS ROUTE FIXES THE 404 ON THE MAIN URL
 @app.route('/', methods=['GET'])
 @app.route('/api', methods=['GET'])
 def home():
     return jsonify({"status": "InstaBestDownloader API is online on Vercel!"})
 
-# 2. Main API Endpoint
 @app.route('/api/download', methods=['POST', 'GET'])
+@app.route('/download', methods=['POST', 'GET'])
 def get_reel_data():
     reel_url = None
 
